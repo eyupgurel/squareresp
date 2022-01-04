@@ -12,7 +12,7 @@
 #include <zmq_addon.hpp>
 #include <nlohmann/json.hpp>
 #include <map>
-#include <float.h>
+#include <cfloat>
 
 using namespace boost::asio;
 using ip::tcp;
@@ -103,7 +103,7 @@ inline void erase_first(TOrders& orders){
 
 struct change_quantity
 {
-    change_quantity(const double new_quantity):new_quantity(new_quantity){}
+    explicit change_quantity(const double new_quantity):new_quantity(new_quantity){}
 
     void operator()(order& order)
     {
@@ -187,6 +187,18 @@ inline match processOrder(TOrders& bids, TOrders& asks, order& ord){
     }
 }
 
+inline void matchOrder(order& ord, TOrders& bids, TOrders& asks, std::vector<match>& matches){
+    auto m =  processOrder(bids, asks, ord);
+    if(m.requestingOrderId!=0)
+        matches.push_back(m);
+    while(ord.quantity>0 && m.requestingOrderId!=0){
+        m = processOrder(bids, asks, ord);
+        print_orders(asks);
+        print_orders(bids);
+        matches.push_back(m);
+    }
+}
+
 int main() {
 
     TOrders asks;
@@ -195,58 +207,45 @@ int main() {
     asks.insert({3.38, 8899498,323.32, 24909, order::order_type::sell});
     asks.insert({
                         {3.48, 8830498,11.45, 24339, order::order_type::sell},
-                        {3.39, 8813298,12.01, 24139, order::order_type::sell},
-                 {3.41, 8891002,1242.02, 24112, order::order_type::sell},
-                 {3.39, 8899992,142.11, 24222, order::order_type::sell},
+                        {3.39, 8813298,12.01, 24539, order::order_type::sell},
+                        {3.41, 8891002,1242.02, 24112, order::order_type::sell},
+                        {3.39, 8899992,142.11, 24222, order::order_type::sell},
 
     });
     asks.insert({3.33, 8872883, 122.25, 24823, order::order_type::sell});
     asks.insert({3.31, 8834888,22.78, 24829, order::order_type::sell});
 
 
-    print_orders(asks);
-
 
     TOrders bids;
 
-    bids.insert({3.27, 8832498,22.78, 24829, order::order_type::buy});
-    bids.insert({3.27, 8832443,423.32, 24827, order::order_type::buy});
-    bids.insert({3.23, 8832003, 122.25, 24823, order::order_type::buy});
-    bids.insert({3.27, 8832498,323.32, 24909, order::order_type::buy});
+    bids.insert({3.27, 8832498,22.78, 24129, order::order_type::buy});
+    bids.insert({3.27, 8832443,423.32, 24262, order::order_type::buy});
+    bids.insert({3.23, 8832003, 122.25, 24833, order::order_type::buy});
+    bids.insert({3.27, 8832498,323.32, 24509, order::order_type::buy});
     bids.insert({{3.28, 8831498,12.01, 24139, order::order_type::buy},
-                    {3.29, 8831432,142.11, 24222, order::order_type::buy},
-                    {3.22, 8831002,1242.02, 24112, order::order_type::buy},
-                    {3.02, 8830498,88.24, 24339, order::order_type::buy}});
+                    {3.29, 8831432,142.11, 24272, order::order_type::buy},
+                    {3.22, 8831002,1242.02, 24211, order::order_type::buy},
+                    {3.02, 8830498,88.24, 24590, order::order_type::buy}});
+
+    order order1{3.42, 8854498,111.45, 449348, order::order_type::sell};
 
 
+
+    auto m = processOrder(bids, asks, order1);
+
+    print_orders(asks);
     print_orders(bids);
-
-    order order1{3.42, 8854498,111.45, 249348, order::order_type::sell};
-    processOrder(bids, asks, order1);
 
     std::vector<match> matches;
 
     order orderMarketSell{DBL_MIN, 8852298,530.25, 222228, order::order_type::sell};
-    while(orderMarketSell.quantity>0){
-      auto m = processOrder(bids, asks, orderMarketSell);
-        print_orders(asks);
-        print_orders(bids);
-      matches.push_back(m);
-    }
 
-    print_orders(asks);
-    print_orders(bids);
-
+    matchOrder(orderMarketSell, bids, asks, matches);
 
     order orderMarketBuy{DBL_MAX, 8852298,1500, 333228, order::order_type::buy};
-    while(orderMarketBuy.quantity>0){
-        auto m = processOrder(bids, asks, orderMarketBuy);
-        print_orders(asks);
-        print_orders(bids);
-        matches.push_back(m);
-    }
-    print_orders(asks);
-    print_orders(bids);
+
+    matchOrder(orderMarketBuy, bids, asks, matches);
 
     bids.get<PriceTimeIdx>().modify(bids.get<PriceTimeIdx>().begin(),change_quantity(0.12));
 
