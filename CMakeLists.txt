@@ -18,6 +18,8 @@ find_package(cppzmq)
 
 find_package(nlohmann_json 3.2.0 REQUIRED)
 
+find_package(rxcpp CONFIG)
+
 target_link_libraries(squareresp PRIVATE nlohmann_json::nlohmann_json cppzmq)
 
 

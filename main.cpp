@@ -21,6 +21,20 @@ using namespace boost::multi_index;
 
 static zmq::context_t ctx;
 
+#include "rxcpp/rx.hpp"
+namespace Rx {
+    using namespace rxcpp;
+    using namespace rxcpp::sources;
+    using namespace rxcpp::operators;
+    using namespace rxcpp::util;
+}
+using namespace Rx;
+
+#include <regex>
+#include <random>
+using namespace std;
+using namespace std::chrono;
+
 
 struct match{
     match(long requestingOrderId, long respondingOrderId, double matchAmount)
@@ -198,8 +212,28 @@ inline void matchOrder(order& ord, TOrders& bids, TOrders& asks, std::vector<mat
         matches.push_back(m);
     }
 }
+std::string get_pid() {
+    std::stringstream s;
+    s << std::this_thread::get_id();
+    return s.str();
+}
 
 int main() {
+
+    std::array<order, 6> a = {{{3.33, 8832111,423.32, 24827, order::order_type::sell},
+                               {3.38, 8899498,323.32, 24909, order::order_type::sell},
+                               {3.48, 8830498,11.45, 24339, order::order_type::sell},
+                               {3.39, 8813298,12.01, 24539, order::order_type::sell},
+                               {3.41, 8891002,1242.02, 24112, order::order_type::sell},
+                               {3.39, 8899992,142.11, 24222, order::order_type::sell},
+
+                               }};
+
+    auto values = rxcpp::observable<>::iterate(a);
+    values.subscribe(
+            [](order v){printf("OnNext: %ld\n", v.id);},
+            [](){printf("OnCompleted\n");});
+    printf("//! [from sample]\n");
 
     TOrders asks;
 
