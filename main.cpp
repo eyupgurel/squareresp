@@ -13,6 +13,7 @@
 #include <nlohmann/json.hpp>
 #include <map>
 #include <cfloat>
+#include <chrono>
 
 using namespace boost::asio;
 using ip::tcp;
@@ -220,6 +221,59 @@ std::string get_pid() {
 
 int main() {
 
+    random_device rd;   // non-deterministic generator
+    mt19937 gen(rd());
+    uniform_real_distribution<double> dist_price(3.33, 3.48);
+    uniform_real_distribution<double> dist_quantity(11.45, 1242.02);
+
+    TOrders asks;
+
+    std::vector<order> v_asks;
+
+
+    for(int i =0; i<100000; i++){
+        auto rp = dist_price(gen);
+        auto rq = dist_quantity(gen);
+        long epoch_milli = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+        ).count();
+        //cout << i << endl;
+        v_asks.emplace_back(rp, epoch_milli, rq, i, order::order_type::sell);
+
+    }
+
+
+
+
+
+    long epoch_milli_start = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+
+/*    for (auto it = begin (v_asks); it != end (v_asks); ++it) {
+        asks.insert(*it );
+    }*/
+
+    asks.insert(begin(v_asks), end(v_asks));
+
+    long epoch_milli_end = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+
+    cout << "epoch_milli_start " <<  epoch_milli_start << " epoch_milli_end " << epoch_milli_end << endl;
+
+    cout << "time_elapsed: " << epoch_milli_end - epoch_milli_start << endl;
+
+    return 0;
+
+    print_orders(asks);
+
+
+
+
+
+
+
+
+
     std::array<order, 6> a = {{{3.33, 8832111,423.32, 24827, order::order_type::sell},
                                {3.38, 8899498,323.32, 24909, order::order_type::sell},
                                {3.48, 8830498,11.45, 24339, order::order_type::sell},
@@ -235,7 +289,7 @@ int main() {
             [](){printf("OnCompleted\n");});
     printf("//! [from sample]\n");
 
-    TOrders asks;
+
 
     asks.insert({3.33, 8832111,423.32, 24827, order::order_type::sell});
     asks.insert({3.38, 8899498,323.32, 24909, order::order_type::sell});
