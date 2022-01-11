@@ -1,0 +1,8 @@
+//
+// Created by egl on 11.01.2022.
+//
+
+#ifndef SQUARERESP_DATA_STREAM_H
+#define SQUARERESP_DATA_STREAM_H
+
+#endif //SQUARERESP_DATA_STREAM_H

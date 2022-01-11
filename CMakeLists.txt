@@ -11,7 +11,7 @@ if(NOT Boost_FOUND)
     message(FATAL_ERROR "Could not find boost!")
 endif()
 
-add_executable(squareresp main.cpp)
+add_executable(squareresp main.cpp test/data_stream.cpp test/data_stream.h me/matching_engine.cpp me/matching_engine.h)
 
 #find cppzmq wrapper, installed by make of cppzmq
 find_package(cppzmq)
