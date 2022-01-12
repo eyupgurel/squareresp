@@ -19,7 +19,7 @@
 #include <nlohmann/json.hpp>
 #include <map>
 #include <cfloat>
-#include <chrono>
+
 
 
 
@@ -61,28 +61,28 @@ struct match{
     double matchAmount;
 };
 
+enum class order_type{buy = 0, sell = 1};
 
 struct order {
-    enum class order_type{buy = 0, sell = 1};
-    order(double price, long epochMilli, double quantity, long id, order_type order_type)
+    order(double price, long epochMilli, double quantity, long id, order_type ot)
             : price(price),
               epochMilli(epochMilli),
               quantity(quantity),
               id(id),
-              order_type(order_type){
+              ot(ot){
     }
     double price;
     long epochMilli;
     double quantity;
     long id;
-    order_type order_type;
+    order_type ot;
 };
 
 struct change_quantity
 {
     explicit change_quantity(const double new_quantity):new_quantity(new_quantity){}
 
-    void operator()(order& order)
+    void operator()(order& order) const
     {
         order.quantity = new_quantity;
     }

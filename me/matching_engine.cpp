@@ -9,7 +9,7 @@ std::ostream &operator<<(std::ostream &rOut, match const &rMatch) {
 }
 
 std::ostream &operator<<(std::ostream &rOut, order const &rOrder) {
-    auto type = rOrder.order_type == order::order_type::buy ? "buy" : "sell";
+    auto type = rOrder.ot == order_type::buy ? "buy" : "sell";
     return rOut << "price:" << rOrder.price << " timestamp:" << rOrder.epochMilli << " quantity:" << rOrder.quantity << " id:" << rOrder.id << " order type:" << type << "\n";
 }
 
@@ -46,7 +46,7 @@ void matchOrder(order& ord, TOrders& bids, TOrders& asks, std::vector<match>& ma
 }
 
 inline match matchSellOrder(TOrders& bids, order& ord){
-    if(ord.order_type != order::order_type::sell) throw std::invalid_argument("It must be a sell order.");
+    if(ord.ot != order_type::sell) throw std::invalid_argument("It must be a sell order.");
     auto bestBid = std::next(bids.get<PriceTimeIdx>().cend(), -1);
     double matchAmount = 0.0;
     if(bestBid->quantity <= ord.quantity){
@@ -62,7 +62,7 @@ inline match matchSellOrder(TOrders& bids, order& ord){
 }
 
 inline match matchBuyOrder(TOrders& asks, order& ord){
-    if(ord.order_type != order::order_type::buy) throw std::invalid_argument("It must be a buy order.");
+    if(ord.ot != order_type::buy) throw std::invalid_argument("It must be a buy order.");
     auto bestAsk = asks.get<PriceTimeIdx>().cbegin();
     double matchAmount = 0.0;
     if(bestAsk->quantity <= ord.quantity){
@@ -79,7 +79,7 @@ inline match matchBuyOrder(TOrders& asks, order& ord){
 
 
 inline match processSellOrder(TOrders& bids, TOrders& asks, order& ord){
-    if(ord.order_type != order::order_type::sell) throw std::invalid_argument("It must be a sell order.");
+    if(ord.ot != order_type::sell) throw std::invalid_argument("It must be a sell order.");
     match m {0,0,0.0};
     //Find the best bid.
     auto bestBid = std::next(bids.get<PriceTimeIdx>().cend(), -1);
@@ -92,7 +92,7 @@ inline match processSellOrder(TOrders& bids, TOrders& asks, order& ord){
 }
 
 inline match processBuyOrder(TOrders& bids, TOrders& asks, order& ord){
-    if(ord.order_type != order::order_type::buy) throw std::invalid_argument("It must be a buy order.");
+    if(ord.ot != order_type::buy) throw std::invalid_argument("It must be a buy order.");
     match m {0,0,0.0};
     //Find the best ask.
     auto bestAsk = asks.get<PriceTimeIdx>().cbegin();
@@ -105,11 +105,11 @@ inline match processBuyOrder(TOrders& bids, TOrders& asks, order& ord){
 }
 
 inline match processOrder(TOrders& bids, TOrders& asks, order& ord){
-    switch(ord.order_type){
-        case order::order_type::buy:
+    switch(ord.ot){
+        case order_type::buy:
             return processBuyOrder(bids, asks, ord);
 
-        case order::order_type::sell:
+        case order_type::sell:
             return processSellOrder(bids, asks, ord);
 
         default:
