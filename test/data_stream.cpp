@@ -48,6 +48,5 @@ void prepareOrderSet (std::vector<order>& v_orders,
     orders.insert(begin(v_orders), end(v_orders));
     long epoch_milli_end = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now().time_since_epoch()).count();
-    cout << "epoch_milli_start " <<  epoch_milli_start << " epoch_milli_end " << epoch_milli_end << endl;
     cout << "time_elapsed_insertion: " << epoch_milli_end - epoch_milli_start << endl;
 }

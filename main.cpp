@@ -13,7 +13,7 @@ int main() {
     mt19937 gen(rd());
 
     std::vector<order> v_asks;
-    prepareOrderVector(50000000,order_type::sell,3.33, 3.48,11.45, 1242.02,v_asks);
+    prepareOrderVector(1000000,order_type::sell,3.33, 3.48,11.45, 1242.02,v_asks);
 
     TOrders asks;
     prepareOrderSet(v_asks,asks);
@@ -21,14 +21,14 @@ int main() {
 
 
     std::vector<order> v_bids;
-    prepareOrderVector(50000000,order_type::buy,3.02, 3.29,12.01, 1242.02,v_bids);
+    prepareOrderVector(1000000,order_type::buy,3.02, 3.29,12.01, 1242.02,v_bids);
 
     TOrders bids;
     prepareOrderSet(v_bids,bids);
 
     std::vector<order> v_various_orders;
-    prepareOrderVector(25000000,order_type::sell,DBL_MIN,11.45, 1242.02,v_various_orders);
-    prepareOrderVector(25000000, order_type::buy,3.02, 3.29,12.01, 1242.02,v_various_orders);
+    prepareOrderVector(500000,order_type::sell,DBL_MIN,11.45, 1242.02,v_various_orders);
+    prepareOrderVector(500000, order_type::buy,3.02, 3.29,12.01, 1242.02,v_various_orders);
 
 
     TOrders various_orders;
