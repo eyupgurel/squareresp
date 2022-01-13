@@ -1,5 +1,4 @@
-#include "me/matching_engine.h"
-#include "test/data_stream.h"
+#include "test/churn.h"
 
 
 std::string get_pid() {
@@ -8,58 +7,27 @@ std::string get_pid() {
     return s.str();
 }
 
+
+
 int main() {
-    random_device rd;   // non-deterministic generator
-    mt19937 gen(rd());
 
-    std::vector<order> v_asks;
-    prepareOrderVector(1000000,order_type::sell,3.33, 3.48,11.45, 1242.02,v_asks);
+    rxcpp::observable<>::range(1, 23).
+    subscribe_on(rxcpp::observe_on_new_thread()).
+            map([](int v) {
+                return std::make_tuple(get_pid(), v);}).
+            as_blocking().
+                subscribe(
+            rxcpp::util::apply_to(
+                    [](const std::string pid, int v) {
+                        printf("[thread %s] OnNext: %d\n", pid.c_str(), v);
 
-    TOrders asks;
-    prepareOrderSet(v_asks,asks);
+                        churn();
 
-
-
-    std::vector<order> v_bids;
-    prepareOrderVector(1000000,order_type::buy,3.02, 3.29,12.01, 1242.02,v_bids);
-
-    TOrders bids;
-    prepareOrderSet(v_bids,bids);
-
-    std::vector<order> v_various_orders;
-    prepareOrderVector(500000,order_type::sell,DBL_MIN,11.45, 1242.02,v_various_orders);
-    prepareOrderVector(500000, order_type::buy,3.02, 3.29,12.01, 1242.02,v_various_orders);
+                    }),
+            [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});
 
 
-    TOrders various_orders;
 
-    various_orders.insert(begin(v_various_orders), end(v_various_orders));
-
-    cout << "various_orders.size() " << various_orders.size() << endl;
-
-    std::vector<match> matches;
-
-    long epoch_milli_various_order_start = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count();
-    for(auto order : various_orders){
-        matchOrder(order, bids, asks, matches);
-    }
-    long epoch_milli_various_order_end = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count();
-
-    cout << "bids left " << bids.size() << endl;
-    cout << "asks left " << asks.size() << endl;
-
-    auto duration = epoch_milli_various_order_end - epoch_milli_various_order_start;
-
-    cout << "time_elapsed_various_order_processed: " << duration << endl;
-
-    cout << "match size " << matches.size() << endl;
-
-    if(duration == 0)
-        duration ++;
-
-    cout << "match per second " << matches.size() * 1000 / duration;
 
 
     return 0;
@@ -70,7 +38,7 @@ int main() {
 
 
 
-    order orderMarketSell{DBL_MIN, 8852298,530.25, 222228, order_type::sell};
+/*    order orderMarketSell{DBL_MIN, 8852298,530.25, 222228, order_type::sell};
 
     matchOrder(orderMarketSell, bids, asks, matches);
 
@@ -101,7 +69,7 @@ int main() {
         zmq::message_t z_out(msg_out);
         sock.send(z_out, zmq::send_flags::none);
 
-    }
+    }*/
 
     return 0;
 }
