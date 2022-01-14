@@ -11,7 +11,7 @@ if(NOT Boost_FOUND)
     message(FATAL_ERROR "Could not find boost!")
 endif()
 
-add_executable(squareresp main.cpp test/data_stream.cpp test/data_stream.h me/matching_engine.cpp me/matching_engine.h test/churn.cpp test/churn.h)
+add_executable(squareresp main.cpp test/data_stream.cpp test/data_stream.h test/churn.cpp test/churn.h)
 
 #find cppzmq wrapper, installed by make of cppzmq
 find_package(cppzmq)
@@ -19,8 +19,8 @@ find_package(cppzmq)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 
 find_package(rxcpp CONFIG)
-
-target_link_libraries(squareresp PRIVATE nlohmann_json::nlohmann_json cppzmq /home/egl/Documents/sc/c++/zeromq/matching.engine/cmake-build-debug/libmatching_engine.so)
+include_directories("/home/egl/Documents/sc/c++/zeromq/matching.engine")
+target_link_libraries(squareresp PRIVATE nlohmann_json::nlohmann_json cppzmq /home/egl/Documents/sc/c++/zeromq/matching.engine/cmake-build-release/libmatching_engine.so)
 
 
 
