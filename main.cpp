@@ -9,7 +9,43 @@ std::string get_pid() {
 
 
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
 int main() {
+
+/*    order orderMarketSell{DBL_MIN, 8852298,530.25, 222228, order_type::sell};
+
+    matchOrder(orderMarketSell, bids, asks, matches);
+
+    order orderMarketBuy{DBL_MAX, 8852298,1500, 333228, order_type::buy};
+
+    matchOrder(orderMarketBuy, bids, asks, matches);
+
+    bids.get<PriceTimeIdx>().modify(bids.get<PriceTimeIdx>().begin(),change_quantity(0.12));
+
+    print_orders(bids);*/
+
+/*    zmq::socket_t sock(ctx, zmq::socket_type::rep);
+    sock.bind("tcp://127.0.0.1:5555");
+
+    while (true) {
+        zmq::message_t z_in;
+        sock.recv(z_in);
+
+        auto jmsg_in = nlohmann::json::parse(z_in.to_string_view());
+        int x = jmsg_in["randint"];
+        std::string thread_id = jmsg_in["thread_id"];
+        nlohmann::json jmsg_out;
+        jmsg_out["result"] = x * x;
+        jmsg_out["server"] = true;
+
+        std::string msg_out = std::to_string(x);
+        std::cout << "\nsending back:" << msg_out;
+        zmq::message_t z_out(msg_out);
+        sock.send(z_out, zmq::send_flags::none);
+
+    }*/
+
 
     rxcpp::observable<>::range(1, 2000).
     subscribe_on(rxcpp::observe_on_new_thread()).
@@ -38,40 +74,10 @@ int main() {
 
 
 
-/*    order orderMarketSell{DBL_MIN, 8852298,530.25, 222228, order_type::sell};
 
-    matchOrder(orderMarketSell, bids, asks, matches);
-
-    order orderMarketBuy{DBL_MAX, 8852298,1500, 333228, order_type::buy};
-
-    matchOrder(orderMarketBuy, bids, asks, matches);
-
-    bids.get<PriceTimeIdx>().modify(bids.get<PriceTimeIdx>().begin(),change_quantity(0.12));
-
-    print_orders(bids);
-
-    zmq::socket_t sock(ctx, zmq::socket_type::rep);
-    sock.bind("tcp://127.0.0.1:5555");
-
-    while (true) {
-        zmq::message_t z_in;
-        sock.recv(z_in);
-
-        auto jmsg_in = nlohmann::json::parse(z_in.to_string_view());
-        int x = jmsg_in["randint"];
-        std::string thread_id = jmsg_in["thread_id"];
-        nlohmann::json jmsg_out;
-        jmsg_out["result"] = x * x;
-        jmsg_out["server"] = true;
-
-        std::string msg_out = std::to_string(x);
-        std::cout << "\nsending back:" << msg_out;
-        zmq::message_t z_out(msg_out);
-        sock.send(z_out, zmq::send_flags::none);
-
-    }*/
 
     return 0;
 }
+#pragma clang diagnostic pop
 
 
