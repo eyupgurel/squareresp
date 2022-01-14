@@ -51,5 +51,5 @@ void churn(){
     if(duration == 0)
         duration ++;
 
-    cout << "match per second " << matches.size() * 1000 / duration;
+    cout << "match per second " << matches.size() * 1000 / duration << endl;
 }
