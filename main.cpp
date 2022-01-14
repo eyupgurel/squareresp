@@ -61,21 +61,6 @@ int main() {
 
                     }),
             [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});
-
-
-
-
-
-    return 0;
-
-
-
-
-
-
-
-
-
     return 0;
 }
 #pragma clang diagnostic pop
