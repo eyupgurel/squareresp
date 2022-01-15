@@ -88,6 +88,7 @@ int main() {
         nlohmann::json jmsg_out(matches);
         zmq::message_t z_out(jmsg_out.dump());
         sock.send(z_out, zmq::send_flags::none);
+        matches.clear();
 
         /*        std::string msg_out = std::to_string(x);
         std::cout << "\nsending back:" << msg_out;
