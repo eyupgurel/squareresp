@@ -3,9 +3,10 @@
 //
 
 #include "churn.h"
+#include <data_stream.h>
 void churn(){
     std::vector<order> v_asks;
-    prepareOrderVector(1000000,order_type::sell,3.33, 3.48,11.45, 1242.02,v_asks);
+    prepareOrderVector(1000000,1,3.33, 3.48,11.45, 1242.02,v_asks);
 
     TOrders asks;
     prepareOrderSet(v_asks,asks);
@@ -13,14 +14,14 @@ void churn(){
 
 
     std::vector<order> v_bids;
-    prepareOrderVector(1000000,order_type::buy,3.02, 3.29,12.01, 1242.02,v_bids);
+    prepareOrderVector(1000000,0,3.02, 3.29,12.01, 1242.02,v_bids);
 
     TOrders bids;
     prepareOrderSet(v_bids,bids);
 
     std::vector<order> v_various_orders;
-    prepareOrderVector(500000,order_type::sell,DBL_MIN,11.45, 1242.02,v_various_orders);
-    prepareOrderVector(500000, order_type::buy,3.02, 3.29,12.01, 1242.02,v_various_orders);
+    prepareOrderVector(500000,1,DBL_MIN,11.45, 1242.02,v_various_orders);
+    prepareOrderVector(500000, 0,3.02, 3.29,12.01, 1242.02,v_various_orders);
 
 
     TOrders various_orders;
