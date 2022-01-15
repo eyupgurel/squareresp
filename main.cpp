@@ -48,7 +48,7 @@ static zmq::context_t ctx;
 
 int main() {
 
-    TOrders asks;
+/*    TOrders asks;
     TOrders bids;
     std::vector<match> matches;
 
@@ -89,16 +89,10 @@ int main() {
         zmq::message_t z_out(jmsg_out.dump());
         sock.send(z_out, zmq::send_flags::none);
         matches.clear();
-
-        /*        std::string msg_out = std::to_string(x);
-        std::cout << "\nsending back:" << msg_out;
-        zmq::message_t z_out(msg_out);
-        sock.send(z_out, zmq::send_flags::none);*/
-
-    }
+    }*/
 
 
-/*    rxcpp::observable<>::range(1, 2000).
+    rxcpp::observable<>::range(1, 2000).
     subscribe_on(rxcpp::observe_on_new_thread()).
             map([](int v) {
                 return std::make_tuple(get_pid(), v);}).
@@ -111,7 +105,7 @@ int main() {
                         churn();
 
                     }),
-            [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});*/
+            [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});
     return 0;
 }
 #pragma clang diagnostic pop
