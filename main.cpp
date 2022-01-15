@@ -85,13 +85,7 @@ int main() {
             order ord(o["price"],o["epochMilli"],o["quantity"],o["id"],o["ot"]);
             matchOrder(ord, bids, asks, matches);
         }
-
-
-        nlohmann::json jmsg_out;
-        jmsg_out["requestingOrderId"] = 1;
-        jmsg_out["respondingOrderId"] = 2;
-        jmsg_out["matchAmount"] = 1.2;
-
+        nlohmann::json jmsg_out(matches);
         zmq::message_t z_out(jmsg_out.dump());
         sock.send(z_out, zmq::send_flags::none);
 
