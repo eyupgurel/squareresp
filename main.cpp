@@ -52,6 +52,7 @@ int main() {
     TOrders bids;
     std::vector<match> matches;
 
+/*
     zmq::socket_t sock(ctx, zmq::socket_type::rep);
     sock.bind("tcp://127.0.0.1:5555");
 
@@ -73,9 +74,10 @@ int main() {
         bids.clear();
         matches.clear();
     }
+*/
 
 
-/*    rxcpp::observable<>::range(1, 2000).
+    rxcpp::observable<>::range(1, 2000).
     subscribe_on(rxcpp::observe_on_new_thread()).
             map([](int v) {
                 return std::make_tuple(get_pid(), v);}).
@@ -88,7 +90,8 @@ int main() {
                         churn();
 
                     }),
-            [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});*/
+            [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});
+
     return 0;
 }
 #pragma clang diagnostic pop
