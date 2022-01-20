@@ -52,15 +52,10 @@ int main() {
     TOrders bids;
     std::vector<match> matches;
 
-
-/*
     zmq::socket_t sock(ctx, zmq::socket_type::rep);
-    sock.bind("tcp://127.0.0.1:5555");
-    long epoch_milli = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()
-    ).count();
+    sock.bind("tcp://127.0.0.1:4444");
 
-    while (true) {
+/*    while (true) {
         zmq::message_t z_in;
         sock.recv(z_in);
 
@@ -68,13 +63,7 @@ int main() {
 
         for(auto o: jmsg_in){
             order ord(o["price"],o["epochMilli"],o["quantity"],o["id"],o["ot"]);
-            if(epoch_milli - ord.epochMilli > 274877906944) {
-                matchOrder(ord, bids, asks, matches);
-            } else if (ord.ot == 0) {
-                bids.insert(ord);
-            } else {
-                asks.insert(ord);
-            }
+            matchOrder(ord, bids, asks, matches);
         }
         nlohmann::json jmsg_out(matches);
         zmq::message_t z_out(jmsg_out.dump());
@@ -82,9 +71,7 @@ int main() {
         asks.clear();
         bids.clear();
         matches.clear();
-    }
-*/
-
+    }*/
 
 
     rxcpp::observable<>::range(1, 2000).

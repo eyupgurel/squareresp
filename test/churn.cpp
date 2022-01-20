@@ -7,9 +7,6 @@
 void churn(){
 
     const int order_count = 250000;
-    long epoch_milli = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()
-    ).count();
 
     TOrders asks;
     TOrders bids;
@@ -27,13 +24,7 @@ void churn(){
     long epoch_milli_various_order_start = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now().time_since_epoch()).count();
     for(auto ord : various_orders){
-        if(epoch_milli - ord.epochMilli > 274877906944) {
-            matchOrder(ord, bids, asks, matches);
-        } else if (ord.ot == 0) {
-            bids.insert(ord);
-        } else {
-            asks.insert(ord);
-        }
+        matchOrder(ord, bids, asks, matches);
     }
     long epoch_milli_various_order_end = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now().time_since_epoch()).count();
