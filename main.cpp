@@ -1,5 +1,6 @@
 #include "test/churn.h"
 #include <matching_engine.h>
+#include <boost/format.hpp>
 
 
 std::string get_pid() {
@@ -46,16 +47,16 @@ void from_json(const nlohmann::json& j, match& m) {
 
 static zmq::context_t ctx;
 
-int main() {
+int main(int argc, char * argv[]) {
 
     TOrders asks;
     TOrders bids;
     std::vector<match> matches;
 
     zmq::socket_t sock(ctx, zmq::socket_type::rep);
-    sock.bind("tcp://127.0.0.1:4444");
+    sock.bind(argv[1]);
 
-/*    while (true) {
+    while (true) {
         zmq::message_t z_in;
         sock.recv(z_in);
 
@@ -71,10 +72,10 @@ int main() {
         asks.clear();
         bids.clear();
         matches.clear();
-    }*/
+    }
 
 
-    rxcpp::observable<>::range(1, 2000).
+  /*  rxcpp::observable<>::range(1, 2000).
     subscribe_on(rxcpp::observe_on_new_thread()).
             map([](int v) {
                 return std::make_tuple(get_pid(), v);}).
@@ -87,7 +88,7 @@ int main() {
                         churn();
 
                     }),
-            [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});
+            [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});*/
 
     return 0;
 }
