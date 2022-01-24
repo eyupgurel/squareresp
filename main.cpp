@@ -42,10 +42,43 @@ void from_json(const nlohmann::json& j, match& m) {
 }
 
 
+void to_json(nlohmann::json& j, const engine_state& es) {
+    j = nlohmann::json{
+            {"asks", es.asks},
+            {"bids", es.bids},
+            {"matches", es.matches}
+    };
+}
+
+void from_json(const nlohmann::json& j, engine_state& es) {
+    auto asks = j.at("asks").get<nlohmann::json::array_t>();
+    for(auto ask : asks){
+        order ord(ask["price"],ask["epochMilli"],ask["quantity"],ask["id"],ask["ot"]);
+        es.asks.emplace_back(ord);
+    }
+    auto bids = j.at("bids").get<nlohmann::json::array_t>();
+    for(auto bid : bids){
+        order ord(bid["price"],bid["epochMilli"],bid["quantity"],bid["id"],bid["ot"]);
+        es.bids.emplace_back(ord);
+    }
+    auto matches = j.at("matches").get<nlohmann::json::array_t>();
+    for(auto j_match : matches){
+        match match(j_match["requestingOrderId"],j_match["respondingOrderId"],j_match["matchAmount"]);
+        es.matches.emplace_back(match);
+    }
+}
+
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
 
 static zmq::context_t ctx;
+
+inline void write_orders(TOrders& orders, std::vector<order>& vorders){
+    auto ordersBeg = orders.get<PriceTimeIdx>().cbegin();
+    auto ordersEnd = orders.get<PriceTimeIdx>().cend();
+    for(auto it=ordersBeg; it!=ordersEnd;++it )
+        vorders.emplace_back(*it);
+}
 
 int main(int argc, char * argv[]) {
 
@@ -66,9 +99,19 @@ int main(int argc, char * argv[]) {
             order ord(o["price"],o["epochMilli"],o["quantity"],o["id"],o["ot"]);
             matchOrder(ord, bids, asks, matches);
         }
-        nlohmann::json jmsg_out(matches);
-        zmq::message_t z_out(jmsg_out.dump());
-        sock.send(z_out, zmq::send_flags::none);
+
+
+        std::vector<order> v_asks;
+        write_orders(asks, v_asks);
+        std::vector<order> v_bids;
+        write_orders(bids, v_bids);
+
+        engine_state es(v_asks, v_bids, matches);
+
+        nlohmann::json jmsg_out_engine_state(es);
+        zmq::message_t z_out_engine_state(jmsg_out_engine_state.dump());
+        sock.send(z_out_engine_state, zmq::send_flags::none);
+
         asks.clear();
         bids.clear();
         matches.clear();
