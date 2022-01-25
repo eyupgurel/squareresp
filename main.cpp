@@ -90,7 +90,7 @@ int main(int argc, char * argv[]) {
     zmq::socket_t sock(ctx, zmq::socket_type::rep);
     sock.bind(argv[1]);
 
-    while (true) {
+/*    while (true) {
         zmq::message_t z_in;
         sock.recv(z_in);
 
@@ -116,10 +116,10 @@ int main(int argc, char * argv[]) {
         asks.clear();
         bids.clear();
         matches.clear();
-    }
+    }*/
 
 
-  /*  rxcpp::observable<>::range(1, 2000).
+    rxcpp::observable<>::range(1, 2000).
     subscribe_on(rxcpp::observe_on_new_thread()).
             map([](int v) {
                 return std::make_tuple(get_pid(), v);}).
@@ -132,7 +132,7 @@ int main(int argc, char * argv[]) {
                         churn();
 
                     }),
-            [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});*/
+            [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});
 
     return 0;
 }
