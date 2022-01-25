@@ -15,7 +15,8 @@ void to_json(nlohmann::json& j, const order& o) {
             {"epochMilli", o.epochMilli},
             {"quantity", o.quantity},
             {"id", o.id},
-            {"ot", o.ot}
+            {"ot", o.ot},
+            {"cud", o.cud},
     };
 }
 
@@ -25,7 +26,9 @@ void from_json(const nlohmann::json& j, order& o) {
     o.quantity = j.at("quantity").get<double>();
     o.id = j.at("id").get<long>();
     o.ot = j.at("ot").get<int>();
+    o.cud = j.at("cud").get<int>();
 }
+
 
 void to_json(nlohmann::json& j, const match& m) {
     j = nlohmann::json{
@@ -41,7 +44,6 @@ void from_json(const nlohmann::json& j, match& m) {
     m.matchAmount = j.at("matchAmount").get<double>();
 }
 
-
 void to_json(nlohmann::json& j, const engine_state& es) {
     j = nlohmann::json{
             {"asks", es.asks},
@@ -53,12 +55,12 @@ void to_json(nlohmann::json& j, const engine_state& es) {
 void from_json(const nlohmann::json& j, engine_state& es) {
     auto asks = j.at("asks").get<nlohmann::json::array_t>();
     for(auto ask : asks){
-        order ord(ask["price"],ask["epochMilli"],ask["quantity"],ask["id"],ask["ot"]);
+        order ord(ask["price"],ask["epochMilli"],ask["quantity"],ask["id"],ask["ot"],ask["cud"]);
         es.asks.emplace_back(ord);
     }
     auto bids = j.at("bids").get<nlohmann::json::array_t>();
     for(auto bid : bids){
-        order ord(bid["price"],bid["epochMilli"],bid["quantity"],bid["id"],bid["ot"]);
+        order ord(bid["price"],bid["epochMilli"],bid["quantity"],bid["id"],bid["ot"],bid["cud"]);
         es.bids.emplace_back(ord);
     }
     auto matches = j.at("matches").get<nlohmann::json::array_t>();
@@ -67,7 +69,6 @@ void from_json(const nlohmann::json& j, engine_state& es) {
         es.matches.emplace_back(match);
     }
 }
-
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
 
@@ -96,7 +97,7 @@ int main(int argc, char * argv[]) {
         auto jmsg_in = nlohmann::json::parse(z_in.to_string_view());
 
         for(auto o: jmsg_in){
-            order ord(o["price"],o["epochMilli"],o["quantity"],o["id"],o["ot"]);
+            order ord(o["price"],o["epochMilli"],o["quantity"],o["id"],o["ot"],o["cud"]);
             matchOrder(ord, bids, asks, matches);
         }
 
