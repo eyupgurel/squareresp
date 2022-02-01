@@ -1,7 +1,15 @@
 #include "test/churn.h"
 #include <matching_engine.h>
-#include <boost/format.hpp>
+#include <zmq_addon.hpp>
 
+#include "rxcpp/rx.hpp"
+namespace Rx {
+    using namespace rxcpp;
+    using namespace rxcpp::sources;
+    using namespace rxcpp::operators;
+    using namespace rxcpp::util;
+}
+using namespace Rx;
 
 std::string get_pid() {
     std::stringstream s;
@@ -98,7 +106,7 @@ int main(int argc, char * argv[]) {
 
         for(auto o: jmsg_in){
             order ord(o["price"],o["epochMilli"],o["quantity"],o["id"],o["ot"],o["cud"]);
-            matchOrder(ord, bids, asks, matches);
+            match_order(ord, bids, asks, matches);
         }
 
 

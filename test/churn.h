@@ -7,5 +7,7 @@
 #define SQUARERESP_CHURN_H
 #include <matching_engine.h>
 #include <data_stream.h>
-void churn();
+void churn2();
+
+[[noreturn]] void churn();
 #endif //SQUARERESP_CHURN_H
