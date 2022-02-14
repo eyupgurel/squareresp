@@ -32,7 +32,7 @@ void from_json(const nlohmann::json& j, order& o) {
     o.price = j.at("price").get<double>();
     o.epochMilli = j.at("epochMilli").get<long>();
     o.quantity = j.at("quantity").get<double>();
-    o.id = j.at("id").get<long>();
+    o.id = j.at("id").get<unsigned long>();
     o.ot = j.at("ot").get<int>();
     o.cud = j.at("cud").get<int>();
 }
@@ -47,8 +47,8 @@ void to_json(nlohmann::json& j, const match& m) {
 }
 
 void from_json(const nlohmann::json& j, match& m) {
-    m.requestingOrderId = j.at("requestingOrderId").get<long>();
-    m.respondingOrderId = j.at("respondingOrderId").get<long>();
+    m.requestingOrderId = j.at("requestingOrderId").get<unsigned long>();
+    m.respondingOrderId = j.at("respondingOrderId").get<unsigned long>();
     m.matchAmount = j.at("matchAmount").get<double>();
 }
 
@@ -98,7 +98,7 @@ int main(int argc, char * argv[]) {
     zmq::socket_t sock(ctx, zmq::socket_type::rep);
     sock.bind(argv[1]);
 
-/*    while (true) {
+    while (true) {
         zmq::message_t z_in;
         sock.recv(z_in);
 
@@ -124,23 +124,22 @@ int main(int argc, char * argv[]) {
         asks.clear();
         bids.clear();
         matches.clear();
-    }*/
+    }
 
 
-    rxcpp::observable<>::range(1, 2000).
+/*    rxcpp::observable<>::range(1, 2000).
     subscribe_on(rxcpp::observe_on_new_thread()).
             map([](int v) {
                 return std::make_tuple(get_pid(), v);}).
             as_blocking().
                 subscribe(
             rxcpp::util::apply_to(
-                    [](const std::string pid, int v) {
+                    [](const std::string& pid, int v) {
                         printf("[thread %s] OnNext: %d\n", pid.c_str(), v);
-
                         churn();
-
                     }),
             [](){printf("[thread %s] OnCompleted\n", get_pid().c_str());});
+            */
 
     return 0;
 }
